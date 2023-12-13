@@ -4,9 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.widget.Toast;
+
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.ArrayList;
 
@@ -40,7 +49,7 @@ public class AudioList extends AppCompatActivity {
             // Loop through the rows and add each audio file to the ArrayList
             do {
                 // Get the data from the cursor
-                String name = cursor.getString (nameColumn);
+                String name = cursor.getString (nameColumn).replace(".ogg","");
                 String path = cursor.getString (pathColumn);
                 long duration = cursor.getLong (durationColumn);
 
@@ -72,7 +81,7 @@ public class AudioList extends AppCompatActivity {
             // Loop through the rows and add each audio file to the ArrayList
             do {
                 // Get the data from the cursor
-                String name = cursor2.getString (nameColumn);
+                String name = cursor2.getString (nameColumn).replace(".mp3","").replace(".ogg","");
                 String path = cursor2.getString (pathColumn);
                 long duration = cursor2.getLong (durationColumn);
 
@@ -93,9 +102,28 @@ public class AudioList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_list);
 
-        allAudioRecycler=findViewById(R.id.allAudioRecycler);
-        allAudioRecycler.setLayoutManager(new LinearLayoutManager(this));
-        scanAudioFiles();
-        allAudioRecycler.setAdapter(new AudioFileAdapter(audioFiles));
+        Dexter.withContext(this)
+                .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+                        allAudioRecycler=findViewById(R.id.allAudioRecycler);
+                        allAudioRecycler.setLayoutManager(new LinearLayoutManager(AudioList.this));
+                        scanAudioFiles();
+                        allAudioRecycler.setAdapter(new AudioFileAdapter(audioFiles));
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+                        permissionToken.continuePermissionRequest();
+                    }
+                })
+                .check();
+
     }
 }

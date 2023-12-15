@@ -49,6 +49,7 @@ public class Song extends AppCompatActivity{
         songs = (ArrayList) bundle.getParcelableArrayList("songs");
         songName = intent.getStringExtra("current song");
         song_title.setText(songName);
+        song_title.setSelected(true);
         Bundle bundle1=intent.getExtras();
         position = (String[]) bundle1.getStringArray("position");
         fileNo=intent.getIntExtra("fileNo",0);
@@ -126,9 +127,12 @@ public class Song extends AppCompatActivity{
                     fileNo=songs.size()-1;
                 }
                 mediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(position[fileNo]));
+                seekBar.setMax(mediaPlayer.getDuration());
+                seekBar.setProgress(0);
                 if (mediaPlayer != null)
                     mediaPlayer.start();
-                seekBar.setMax(mediaPlayer.getDuration());
+                play.setImageResource(R.drawable.pause);
+
                 song_title.setText(songs.get(fileNo).getName());
 
             }
@@ -151,10 +155,12 @@ public class Song extends AppCompatActivity{
                 Log.d("TAG", "onCreate:"+fileNo);
                 mediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse(position[fileNo]));
                 Log.d("YourTag", "onCreate:before:"+fileNo);
-                mediaPlayer.start();
 
                 seekBar.setMax(mediaPlayer.getDuration());
+                seekBar.setProgress(0);
+                mediaPlayer.start();
 
+                play.setImageResource(R.drawable.pause);
                 song_title.setText(songs.get(fileNo).getName());
 
             }

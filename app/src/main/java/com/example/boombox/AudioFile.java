@@ -1,6 +1,8 @@
 package com.example.boombox;
 
-public class AudioFile {
+import java.io.Serializable;
+
+public class AudioFile implements Serializable {
     // Fields to store the information of each audio file
     private String name;
     private String path;

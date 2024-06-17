@@ -1,5 +1,5 @@
 <p align='center'>
-    <img src="https://capsule-render.vercel.app/api?type=venom&height=300&color=gradient&text=BoomBox"/>
+    <img src="https://capsule-render.vercel.app/api?type=venom&height=300&color=gradient&text=BoomBox&desc=Your%20local%20Audio%20Player&descAlignY=61&descAlign=61"/>
 </p>
 
 # Overview
